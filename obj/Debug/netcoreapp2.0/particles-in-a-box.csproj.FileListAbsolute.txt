@@ -1,0 +1,10 @@
+C:\Users\Croote\Desktop\Projects\particles-in-a-box\obj\Debug\netcoreapp2.0\particles-in-a-box.csprojAssemblyReference.cache
+C:\Users\Croote\Desktop\Projects\particles-in-a-box\obj\Debug\netcoreapp2.0\particles-in-a-box.AssemblyInfoInputs.cache
+C:\Users\Croote\Desktop\Projects\particles-in-a-box\obj\Debug\netcoreapp2.0\particles-in-a-box.AssemblyInfo.cs
+C:\Users\Croote\Desktop\Projects\particles-in-a-box\bin\Debug\netcoreapp2.0\particles-in-a-box.deps.json
+C:\Users\Croote\Desktop\Projects\particles-in-a-box\bin\Debug\netcoreapp2.0\particles-in-a-box.runtimeconfig.json
+C:\Users\Croote\Desktop\Projects\particles-in-a-box\bin\Debug\netcoreapp2.0\particles-in-a-box.runtimeconfig.dev.json
+C:\Users\Croote\Desktop\Projects\particles-in-a-box\bin\Debug\netcoreapp2.0\particles-in-a-box.dll
+C:\Users\Croote\Desktop\Projects\particles-in-a-box\bin\Debug\netcoreapp2.0\particles-in-a-box.pdb
+C:\Users\Croote\Desktop\Projects\particles-in-a-box\obj\Debug\netcoreapp2.0\particles-in-a-box.dll
+C:\Users\Croote\Desktop\Projects\particles-in-a-box\obj\Debug\netcoreapp2.0\particles-in-a-box.pdb
