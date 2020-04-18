@@ -16,7 +16,7 @@ public class Program
         box.Refresh();
         // Create particles
         // Set number of particles, bounds of the box as bounds of particles as those of the Window, radius, mass 
-        box.InitialiseParticles(number: 20, boundX: boxWidth, boundY: boxHeight, r: 20, m: 1);
+        box.InitialiseParticles(number: 40, boundX: boxWidth, boundY: boxHeight, r: 10, m: 1);
         // Drawing loop
         // This needs to be improved in order to cleanly exit the animation
         // If you want it to stop just click Ctrl + C in terminal
