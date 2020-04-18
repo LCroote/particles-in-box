@@ -7,15 +7,15 @@ class Particle
 {
     // assign variables
     // Postion
-    double _x;
-    double _y;
+    private double _x;
+    private double _y;
     // Velocity
-    double _vx;
-    double _vy;
+    private double _vx;
+    private double _vy;
     // radius
-    double _r;
+    private double _r;
     // Mass 
-    double _m;
+    private double _m;
 
     // Constructor
     public Particle(double x, double y, double vx, double vy, double r, double m)
@@ -46,18 +46,29 @@ class Particle
     public void Draw(Box box)
     {
         box.FillCircle(Color.Black, _x, _y, _r);
-        // box.Refresh();
     }
 
     public void WallCollsion(int boundX, int boundY)
     {
         // Collisions occur when the particles is within a radius distance from the wall
-        if (_x > (boundX - _r) || _x < (0 + _r))
+        if (_x > (boundX - _r))
         {
+            _x = boundX - _r;
             _vx = _vx * (-1); // Reverse trajectory
         }
-        if (_y > (boundY - _r) || _y < (0 + _r))
+        if (_x < (0 + _r))
         {
+            _x = (0 + _r);
+            _vx = _vx * (-1); // Reverse trajectory
+        }
+        if (_y > (boundY - _r))
+        {
+            _y = (boundY - _r);
+            _vy = _vy * (-1);
+        }
+        if (_y < (0 + _r))
+        {
+            _y = (0 + _r);
             _vy = _vy * (-1);
         }
     }
@@ -67,6 +78,7 @@ class Particle
         
         double[] v1PrimeArr = new double[2]; 
         double[] v2PrimeArr = new double[2]; 
+         
         // Convert using Linear Algebra, simplifies calculations
         // Velocity Vector
         var v1 = Vector<double>.Build.Dense(new[] { _vx, _vy });
@@ -86,6 +98,24 @@ class Particle
         // If radial distance between center of two particles is less than the sum of their radii then this is a collision
         if (Math.Sqrt(Math.Pow(p2._x - _x, 2) + Math.Pow(p2._y - _y, 2)) < (_r + p2._r))
         {    
+            
+            // Find the euclidean distance between two points
+            double overlapDistance = Math.Sqrt(Math.Pow(p2._x - _x, 2) + Math.Pow(p2._y - _y, 2));
+            // Adjustment is the amount the particles need to be separated in order not overlap
+            double adjustment = (_r + p2._r - overlapDistance) / 1.99; // Give small buffer so < 2
+            // Calcualte the unit vector along the plane of collision 
+            Vector<double> unitVector;   
+            unitVector = (x1 - x2).Divide((x1 - x2).L2Norm());
+
+            // Adjust particles to remove overlap
+            x1 = x1 + (unitVector * adjustment);
+            x2 = x2 - (unitVector * adjustment);
+            // Adjust particles 
+            // Set THIS particles position
+            _x = x1.At(0); _y = x1.At(1);
+            // Set OTHER particle position
+            p2._x = x2.At(0); p2._y = x2.At(1);
+
             // Collision Calc
             // Some vector calculations
             // This can also be done formulaicly but I find vector to be simpler to type (let the library Math.Net to the work for you)
@@ -95,15 +125,16 @@ class Particle
             // Update velocities
             // Set THIS particles velocities
             _vx = v1Prime.At(0); _vy = v1Prime.At(1);
-
             // Set OTHER particle velocities
             p2.vx = v2Prime.At(0); p2.vy = v2Prime.At(1);
 
             // Finally need to unattach particles which collide but do not separate
-            // Particles can get stuck since a collision is only registered after they overlap. THis results in a 
+            // Particles can get stuck since a collision is only registered after they overlap. This results in a 
             // constant collison being triggerted every loop and the particles "Stick" together.
             // ie so for purposes of this program I just adjust them back the way they cam by some fudge factor
-            _x = _x + _vx * 5; _y = _y + _vy * 5;
+            // This fudge factor is proportional to the overlapping distance.
+
+            // _x = _x + _vx * 5; _y = _y + _vy * 5;
             p2.x = p2.x + p2.vx * 1; p2.y = p2.y + p2.vy * 1;
         }
     }
