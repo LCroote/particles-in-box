@@ -5,8 +5,18 @@ class Box:Window
 {
     Particle[] _particles;
     int _w; int _h;
+
+    // public bool Quit = false;
+    // public bool Quit = false;
+
+    public bool Quit {get; set;}
     // Contructor
-    public Box (string caption, int width, int height) : base(caption, width, height) {_w = width; _h = height;}
+    public Box (string caption, int width, int height) : base(caption, width, height) 
+    {
+        _w = width; 
+        _h = height;
+        Quit = false;
+    }
     
     // Methods
     // Fill box with particles
@@ -56,5 +66,14 @@ class Box:Window
         box.MoveParticles();        // Move Particles to new positions
         box.DrawParticles (box);    // Redraw particles in new positions
         box.Refresh();              // Refresh Window
+    }
+
+    // Handle input from user
+    public void HandleInput()
+    {
+        if (SplashKit.KeyTyped(KeyCode.EscapeKey))
+        {
+            Quit = true;
+        }
     }
 }
