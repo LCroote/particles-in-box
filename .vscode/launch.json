@@ -30,7 +30,7 @@
             "windows": {
                 "console": "externalTerminal",
                 "env": {
-                    "PATH": "${env:PATH};C:/msys64/home/Croote/.splashkit/lib/win64"
+                    "PATH": "${env:PATH};C:/msys64/home/lukac/.splashkit/lib/win64"
                 }
             }
         }

@@ -6,7 +6,7 @@ using MathNet.Numerics.LinearAlgebra.Double; // Linear Algebra for Collisions
 class Particle
 {
     // assign variables
-    // Postion
+    // Postion 
     private double _x;
     private double _y;
     // Velocity

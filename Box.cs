@@ -8,7 +8,7 @@ class Box:Window
 
     // public bool Quit = false;
     // public bool Quit = false;
-
+ 
     public bool Quit {get; set;}
     // Contructor
     public Box (string caption, int width, int height) : base(caption, width, height) 
