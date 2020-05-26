@@ -16,9 +16,15 @@ class Particle
     private double _r;
     // Mass 
     private double _m;
+    
+    public Color color = Color.Black; 
+
+    // bounds
+    private int _boundX;
+    private int _boundY;
 
     // Constructor
-    public Particle(double x, double y, double vx, double vy, double r, double m)
+    public Particle(double x, double y, double vx, double vy, double r, double m, Color pColor, int boundx, int boundy)
     {
         _x = x;
         _y = y;
@@ -26,15 +32,20 @@ class Particle
         _vy = vy;
         _r = r;
         _m = m;
+        color = pColor;
+        _boundX = boundx;
+        _boundY = boundy;
 
     }
 
-    // get set
     // Used to set new velocity and position in inside ParticleCollision
     public double vx { get { return _vx; } set { _vx = value; }  }
     public double vy { get { return _vy; } set { _vy = value; }  }
     public double x { get { return _x; } set { _x = value; }  }
     public double y { get { return _y; } set { _y = value; }  }
+    public int boundX { get { return _boundX; } set { _boundX = value; }  }
+    public int boundY { get { return _boundY; } set { _boundY = value; }  }
+    // public Color color { get { return color; } set { color = value; }  }
     // Method
     // Movement
     public void Move(double inc)
@@ -45,10 +56,11 @@ class Particle
 
     public void Draw(Box box)
     {
-        box.FillCircle(Color.Black, _x, _y, _r);
+        box.FillCircle(color, _x, _y, _r);
     }
 
-    public void WallCollsion(int boundX, int boundY)
+    public void WallCollision()
+    // public void WallCollsion(int boundX, int boundY)
     {
         // Collisions occur when the particles is within a radius distance from the wall
         if (_x > (boundX - _r))
@@ -73,6 +85,11 @@ class Particle
         }
     }
 
+    // return if particle collides
+    public bool HasCollided(Particle p2)
+    {
+        return Math.Sqrt(Math.Pow(p2._x - _x, 2) + Math.Pow(p2._y - _y, 2)) < (_r + p2._r);
+    }
     public void ParticleCollision (Particle p2)
     {
         
@@ -94,48 +111,43 @@ class Particle
         var v1Prime = Vector<double>.Build.Dense(2);
         var v2Prime = Vector<double>.Build.Dense(2);
 
-        // Check for collisions
-        // If radial distance between center of two particles is less than the sum of their radii then this is a collision
-        if (Math.Sqrt(Math.Pow(p2._x - _x, 2) + Math.Pow(p2._y - _y, 2)) < (_r + p2._r))
-        {    
-            
-            // Find the euclidean distance between two points
-            double overlapDistance = Math.Sqrt(Math.Pow(p2._x - _x, 2) + Math.Pow(p2._y - _y, 2));
-            // Adjustment is the amount the particles need to be separated in order not overlap
-            double adjustment = (_r + p2._r - overlapDistance) / 1.99; // Give small buffer so < 2
-            // Calcualte the unit vector along the plane of collision 
-            Vector<double> unitVector;   
-            unitVector = (x1 - x2).Divide((x1 - x2).L2Norm());
+        // Calculation    
+        // Find the euclidean distance between two points
+        double overlapDistance = Math.Sqrt(Math.Pow(p2._x - _x, 2) + Math.Pow(p2._y - _y, 2));
+        // Adjustment is the amount the particles need to be separated in order not overlap
+        double adjustment = (_r + p2._r - overlapDistance) / 1.99; // Give small buffer so < 2
+        // Calcualte the unit vector along the plane of collision 
+        Vector<double> unitVector;   
+        unitVector = (x1 - x2).Divide((x1 - x2).L2Norm());
 
-            // Adjust particles to remove overlap
-            x1 = x1 + (unitVector * adjustment);
-            x2 = x2 - (unitVector * adjustment);
-            // Adjust particles 
-            // Set THIS particles position
-            _x = x1.At(0); _y = x1.At(1);
-            // Set OTHER particle position
-            p2._x = x2.At(0); p2._y = x2.At(1);
+        // Adjust particles to remove overlap
+        x1 = x1 + (unitVector * adjustment);
+        x2 = x2 - (unitVector * adjustment);
+        // Adjust particles 
+        // Set THIS particles position
+        _x = x1.At(0); _y = x1.At(1);
+        // Set OTHER particle position
+        p2._x = x2.At(0); p2._y = x2.At(1);
 
-            // Collision Calc
-            // Some vector calculations
-            // This can also be done formulaicly but I find vector to be simpler to type (let the library Math.Net to the work for you)
-            v1Prime = v1 - (( (2 * m2) / (m1 + m2) ) * ( (v1 - v2).DotProduct( (x1 - x2) ) ) * ( x1 - x2 ) / Math.Pow( (x1 - x2).Norm(2), 2 ));
-            v2Prime = v2 - (( (2 * m1) / (m1 + m2) ) * ( (v2 - v1).DotProduct( (x2 - x1) ) ) * ( x2 - x1 ) / Math.Pow( (x2 - x1).Norm(2), 2 ));
+        // Collision Calc
+        // Some vector calculations
+        // This can also be done formulaicly but I find vector to be simpler to type (let the library Math.Net to the work for you)
+        v1Prime = v1 - (( (2 * m2) / (m1 + m2) ) * ( (v1 - v2).DotProduct( (x1 - x2) ) ) * ( x1 - x2 ) / Math.Pow( (x1 - x2).Norm(2), 2 ));
+        v2Prime = v2 - (( (2 * m1) / (m1 + m2) ) * ( (v2 - v1).DotProduct( (x2 - x1) ) ) * ( x2 - x1 ) / Math.Pow( (x2 - x1).Norm(2), 2 ));
 
-            // Update velocities
-            // Set THIS particles velocities
-            _vx = v1Prime.At(0); _vy = v1Prime.At(1);
-            // Set OTHER particle velocities
-            p2.vx = v2Prime.At(0); p2.vy = v2Prime.At(1);
+        // Update velocities
+        // Set THIS particles velocities
+        _vx = v1Prime.At(0); _vy = v1Prime.At(1);
+        // Set OTHER particle velocities
+        p2.vx = v2Prime.At(0); p2.vy = v2Prime.At(1);
 
-            // Finally need to unattach particles which collide but do not separate
-            // Particles can get stuck since a collision is only registered after they overlap. This results in a 
-            // constant collison being triggerted every loop and the particles "Stick" together.
-            // ie so for purposes of this program I just adjust them back the way they cam by some fudge factor
-            // This fudge factor is proportional to the overlapping distance.
+        // Finally need to unattach particles which collide but do not separate
+        // Particles can get stuck since a collision is only registered after they overlap. This results in a 
+        // constant collison being triggerted every loop and the particles "Stick" together.
+        // ie so for purposes of this program I just adjust them back the way they cam by some fudge factor
+        // This fudge factor is proportional to the overlapping distance.
 
-            // _x = _x + _vx * 5; _y = _y + _vy * 5;
-            p2.x = p2.x + p2.vx * 1; p2.y = p2.y + p2.vy * 1;
-        }
+        // _x = _x + _vx * 5; _y = _y + _vy * 5;
+        p2.x = p2.x + p2.vx * 1; p2.y = p2.y + p2.vy * 1;
     }
 }
