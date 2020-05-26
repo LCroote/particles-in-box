@@ -2,18 +2,10 @@ using System;
 using SplashKitSDK;
 class EntryControl : Control
 {
-    string _defaultValue;
-    int value;
-    int previousValue;
-    bool reading = false;
-    
-    public bool IsReading
-    {
-        get 
-        {
-            return reading;
-        }
-    }
+    public string defualtValue {get; private set;}
+    public int value {get; private set;}
+    public int previousValue {get; private set;}
+    public bool IsReading {get; private set;}
     public int Value
     {
         get 
@@ -24,7 +16,7 @@ class EntryControl : Control
 
     public EntryControl(float x, float y, string label, Color labelColor, string defaultValue) : base(x, y, label, labelColor) 
     {
-        _defaultValue = defaultValue;
+        defualtValue = defaultValue;
         value = Convert.ToInt32(defaultValue);
         previousValue = Convert.ToInt32(defaultValue);
     }
@@ -33,36 +25,34 @@ class EntryControl : Control
     {
         base.Draw(box);
 
-        box.DrawText(_label, Color.Black, SplashKit.FontNamed("fontBold"), 16, _x + 5, _y - 20);
+        box.DrawText(label, Color.Black, SplashKit.FontNamed("fontBold"), 16, x + 5, y - 20);
 
         if ( IsReading)
         {
             SplashKit.DrawCollectedText(Color.Black, SplashKit.FontNamed("fontThin"), 18, SplashKit.OptionDefaults());
         } else 
         {
-            SplashKit.DrawText(Convert.ToString(value), Color.Black, SplashKit.FontNamed("fontThin"), 18, _x, _y);
+            SplashKit.DrawText(Convert.ToString(value), Color.Black, SplashKit.FontNamed("fontThin"), 18, x, y);
             
         }
     }
 
     public override void onClick()
     {
-            // Start reading input
             SplashKit.StartReadingText(rectangle);
-            reading = true;
+            IsReading = true;
             previousValue = value;
     }
     public override void HandleInput()
     {
-        // Check if there is a click in control box
         base.HandleInput();
 
-        if (reading)
+        if (IsReading)
         {
             if( SplashKit.KeyTyped(KeyCode.EscapeKey) )
             {
                 value = previousValue;
-                reading = false;
+                IsReading = false;
             } 
             else if (SplashKit.KeyTyped(KeyCode.ReturnKey))
             {
@@ -78,7 +68,7 @@ class EntryControl : Control
                     value = previousValue;
                 }
 
-                reading = false;
+                IsReading = false;
             } 
         }
 
