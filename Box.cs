@@ -9,16 +9,29 @@ class Box : Window
     public bool Quit {get; set;}
     public Controls controlPanel {get; private set;}
 
+    private int borderWidth = 5;
+
     public Box (string caption, int width, int height) : base(caption, width, height) 
     {
         controlPanel = new Controls(width - 175, 25, "label", "default");
     }
     public void InitialiseParticles(int number, int boundX, int boundY, double r, double m)
     {
+        boundX -= borderWidth;
+        boundY -= borderWidth;
         Random rnd = new Random();
         for (int i = 0; i < numberOfParticles; i++)
         {   
-            particles.Add(new Particle(rnd.Next(0, boundX), rnd.Next(0, boundY), rnd.Next(-10, 10) / 20.0, rnd.Next(-10, 10) / 20.0, r, m, Color.Black, boundX - 200, boundY));
+            particles.Add(new Particle(
+                rnd.Next(0 + borderWidth, boundX)
+                , rnd.Next(0 + borderWidth, boundY)
+                , rnd.Next(-10, 10) / 20.0
+                , rnd.Next(-10, 10) / 20.0
+                , r
+                , m
+                , Color.Gray
+                , boundX - 200
+                , boundY));
             
         }
     }
@@ -58,6 +71,7 @@ class Box : Window
     {
         Clear(Color.White);
         controlPanel.Draw(this); // Draw Control Panel
+        DrawBox();
 
         CheckCollisions();       // Check for collisions between particles and walls
         MoveParticles();         // Move Particles to new positions
@@ -77,6 +91,12 @@ class Box : Window
         {
             Quit = true;
         }
+    }
+
+    public void DrawBox()
+    {
+        FillRectangle(Color.Black, 0, 0, Width - 200, Height);
+        FillRectangle(Color.White, borderWidth, borderWidth, Width - (200 + 2 * borderWidth), Height - 2 * borderWidth);
     }
 
     public void UpdateFromControls()
