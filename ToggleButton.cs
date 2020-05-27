@@ -1,4 +1,3 @@
-using System;
 using SplashKitSDK;
 
 class ToggleButton : Control

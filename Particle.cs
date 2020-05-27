@@ -1,7 +1,6 @@
 using System;
 using SplashKitSDK;
-using MathNet.Numerics.LinearAlgebra; // Linear Algebra for Collisions
-// Define a particle class
+using MathNet.Numerics.LinearAlgebra;
 class Particle
 {
     public Color color = Color.Black; 
@@ -11,10 +10,18 @@ class Particle
     public double y { get; private set; }
     public double r { get; set; }
     public double m { get; set; }
-    public int boundX { get; private set; }
-    public int boundY { get; private set; }
+    public int boundXmin { get; private set; }
+    public int boundXmax { get; private set; }
+    public int boundYmin { get; private set; }
+    public int boundYmax { get; private set; }
 
-    public Particle(double xPosition, double yPosition, double xVelocity, double yVelocity, double radius, double mass, Color pColor, int boundx, int boundy)
+    public Particle(
+          double xPosition, double yPosition
+        , double xVelocity, double yVelocity
+        , double radius, double mass
+        , Color pColor
+        , int boundxmin, int boundymin
+        , int boundxmax, int boundymax)
     {
         x = xPosition;
         y = yPosition;
@@ -23,8 +30,10 @@ class Particle
         r = radius;
         m = mass;
         color = pColor;
-        boundX = boundx;
-        boundY = boundy;
+        boundXmin = boundxmin;
+        boundYmin = boundymin;
+        boundXmax = boundxmax;
+        boundYmax = boundymax;
 
     }
 
@@ -41,24 +50,24 @@ class Particle
 
     public void WallCollision()
     {
-        if (x > (boundX - r))
+        if (x > (boundXmax - r))
         {
-            x = boundX - r;
+            x = boundXmax - r;
             vx = vx * (-1); 
         }
-        if (x < (0 + r))
+        if (x < (boundXmin + r))
         {
-            x = (0 + r);
+            x = (boundXmin + r);
             vx = vx * (-1); 
         }
-        if (y > (boundY - r))
+        if (y > (boundYmax - r))
         {
-            y = (boundY - r);
+            y = (boundYmax - r);
             vy = vy * (-1);
         }
-        if (y < (0 + r))
+        if (y < (boundXmin + r))
         {
-            y = (0 + r);
+            y = (boundXmin + r);
             vy = vy * (-1);
         }
     }
@@ -91,9 +100,9 @@ class Particle
         // Calculation    
         // Find the euclidean distance between two points
         double overlapDistance = Math.Sqrt(Math.Pow(p2.x - x, 2) + Math.Pow(p2.y - y, 2));
-        // Adjustment is the amount the particles need to be separated in order not overlap
+        // Adjustment by the amount the particles need to be separated in order not overlap
         double adjustment = (r + p2.r - overlapDistance) / 1.99; // Give small buffer so < 2
-        // Calcualte the unit vector along the plane of collision 
+        // Calculate the unit vector along the plane of collision 
         Vector<double> unitVector;   
         unitVector = (x1 - x2).Divide((x1 - x2).L2Norm());
 
@@ -111,7 +120,6 @@ class Particle
         p2.x = x2.At(0); p2.y = x2.At(1);
 
         // Collision Calculation
-        // Some vector calculations
         // This can also be done formulaicly but I find vector to be simpler to type (let the library Math.Net to the work)
         v1Prime = v1 - (( (2 * m2) / (m1 + m2) ) * ( (v1 - v2).DotProduct( (x1 - x2) ) ) * ( x1 - x2 ) / Math.Pow( (x1 - x2).Norm(2), 2 ));
         v2Prime = v2 - (( (2 * m1) / (m1 + m2) ) * ( (v2 - v1).DotProduct( (x2 - x1) ) ) * ( x2 - x1 ) / Math.Pow( (x2 - x1).Norm(2), 2 ));

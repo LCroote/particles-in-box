@@ -34,7 +34,7 @@ class Controls
 
     public void CreateControls()
     {
-        controls.Add("number", new EntryControl( x + 5, y + (20 * 0) + 20, "No. Particles", Color.Black, "40"));
+        controls.Add("number", new EntryControl( x + 5, y + (20 * 0) + 20, "No. Particles", Color.Black, "10"));
         controls.Add("color", new ToggleButton( x + 5, y + (50 * 1) + 20, "Toggle Colour", Color.Black));
     }
     public void Draw(Box box)
