@@ -15,6 +15,7 @@ class Box : Window
     {
         controlPanel = new Controls(width - 175, 25, "label", "default");
     }
+    // This is useless now since it is sorted by the controls
     public void InitialiseParticles(int number, int boundX, int boundY, double r, double m)
     {
         boundX -= borderWidth;
@@ -27,8 +28,12 @@ class Box : Window
                 , rnd.Next(0 + borderWidth, boundY)
                 , rnd.Next(-10, 10) / 20.0
                 , rnd.Next(-10, 10) / 20.0
-                , r
-                , m
+                // , r
+                
+                , rnd.Next(5, 50)
+                , rnd.Next(1, 10)
+                // , m
+                
                 , Color.Gray
                 , boundX - 200
                 , boundY));
@@ -77,7 +82,7 @@ class Box : Window
         MoveParticles();         // Move Particles to new positions
         DrawParticles();         // Redraw particles in new positions
 
-        // DrawText(CalculateEnergy().ToString(), Color.Black, Width - 50, Height - 50);
+        DrawText($"Relative Energy: {CalculateEnergy().ToString("0.##")}", Color.Black, Width - 190, Height - 50);
 
         SplashKit.RefreshScreen();
     }
@@ -108,7 +113,22 @@ class Box : Window
             Random rnd = new Random();
             for (int i = 0; i < (((EntryControl)controlPanel.GetControl["number"]).Value - numberOfParticles); i++)
             {
-                particles.Add(new Particle(rnd.Next(0, Width), rnd.Next(0, Height), rnd.Next(-10, 10) / 20.0, rnd.Next(-10, 10) / 20.0, 20, 1, Color.Black, Width - 200, Height));
+                // particles.Add(new Particle(rnd.Next(0, Width), rnd.Next(0, Height), rnd.Next(-10, 10) / 20.0, rnd.Next(-10, 10) / 20.0, 20, 1, Color.Black, Width - 200, Height));
+                int r = rnd.Next(5, 50);
+                int m = r * r;
+                
+                particles.Add(new Particle(
+                    rnd.Next(0 + borderWidth, Width - borderWidth)
+                    , rnd.Next(0 + borderWidth, Height - borderWidth)
+                    , rnd.Next(-10, 10) / 40.0
+                    , rnd.Next(-10, 10) / 40.0
+                    
+                    , r
+                    , m
+                    
+                    , Color.Gray
+                    , Width - borderWidth - 200
+                    , Height - borderWidth));
             }
 
             numberOfParticles = ((EntryControl)controlPanel.GetControl["number"]).Value;
@@ -133,9 +153,7 @@ class Box : Window
         
         foreach (var particle in particles)
         {
-            energy += (0.5 * particle.m * (particle.vx * particle.vx + particle.vy + particle.vy) );
-            // Console.WriteLine($"{1/2 * particle.m}");
-            // Console.WriteLine($"{(particle.vx * particle.vx + particle.vy + particle.vy)}");
+            energy += (0.5 * particle.m * (particle.vx * particle.vx + particle.vy * particle.vy) );
         }
 
         return energy;
