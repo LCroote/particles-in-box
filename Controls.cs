@@ -20,10 +20,16 @@ class Controls
         CreateControls();
     }
 
+    public void LoadResources()
+    {
+        SplashKit.LoadFont("fontBold", "Roboto-Bold.ttf");
+        SplashKit.LoadFont("fontThin", "Roboto-Thin.ttf");
+    }
     public void DrawPanel(Box box)
     {
         box.FillRectangle(Color.Gray, x, y, 150, 150);
-        box.DrawText("Controls", Color.Black, x, y - 10);
+        box.FillRectangle(Color.White, x + 1, y + 1, 148, 148);
+        box.DrawText("Controls", Color.Black, SplashKit.FontNamed("fontBold"), 20, x, y - 21);
     }
 
     public void CreateControls()

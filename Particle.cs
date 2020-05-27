@@ -9,8 +9,8 @@ class Particle
     public double vy { get; private set; }
     public double x { get; private set; }
     public double y { get; private set; }
-    public double r { get; private set; }
-    public double m { get; private set; }
+    public double r { get; set; }
+    public double m { get; set; }
     public int boundX { get; private set; }
     public int boundY { get; private set; }
 

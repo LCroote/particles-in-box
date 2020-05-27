@@ -3,3 +3,5 @@ bin
 lib
 server
 myeasylog.log
+bin/Debug
+obj/Debug

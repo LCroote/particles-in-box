@@ -57,8 +57,6 @@ class EntryControl : Control
             else if (SplashKit.KeyTyped(KeyCode.ReturnKey))
             {
                 previousValue = value;
-
-
                 try
                 {
                     value = Convert.ToInt32(SplashKit.TextInput());
